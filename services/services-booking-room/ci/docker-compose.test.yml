@@ -1,0 +1,141 @@
+version: "3.8"
+
+volumes:
+  rabbitmq_data:
+
+services:
+  ####################################
+  # mysql database  
+  ####################################
+  mysql:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: customer
+  
+  ####################################
+  # RabbitMQ: The messaging broker   
+  ####################################
+  rabbitmq:
+    image: rabbitmq:3-management
+    hostname: rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes: 
+      - rabbitmq_data:/var/lib/rabbitmq
+  
+  ####################################
+  # Atomic Microservice: Meeting Rooms
+  ####################################
+  rooms:
+    build:
+      context: ./services/meeting-rooms
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "30000:5000"
+  ####################################
+  # Atomic Microservice: Customer
+  ####################################
+  customer:
+    build:
+      context: ./services/customers
+      dockerfile: Dockerfile
+    restart: always
+    env_file:
+      - 'dev.env'
+    ports:
+      - "31000:5000"
+  ####################################
+  # Atomic Microservice: Booking
+  ####################################
+  bookings:
+    build:
+      context: ./services/bookings
+      dockerfile: Dockerfile
+    restart: always
+    env_file:
+      - 'dev.env'
+    ports:
+      - "32000:5000"
+  ####################################
+  # Atomic Microservice: Stripe
+  ####################################
+  stripe:
+    build:
+      context: ./services/stripe
+      dockerfile: Dockerfile
+    restart: always
+    env_file:
+      - 'dev.env'
+    ports:
+      - "4242:5000"
+  ####################################
+  # Composite Microservice: Rm. Booking
+  ####################################
+  room-booking:
+    build:
+      context: ./services/booking-room
+      dockerfile: Dockerfile
+    restart: always
+    depends_on:
+      - rooms
+      - customer
+      - bookings
+      - rabbitmq
+    env_file:
+      - 'dev.env'
+    ports:
+      - "33000:5000"
+    environment:
+      PYTHONUNBUFFERED: 1
+      
+  ####################################
+  # User Interface: BookRoomUI
+  ####################################
+  admin-web:
+    build:
+      context: ./user-interfaces/bookRoomUI
+      dockerfile: Dockerfile
+    restart: always
+    env_file:
+      - 'dev.env'
+    ports:
+      - "8001:80"
+  
+  ####################################
+  # Atomic service: Notifications
+  ####################################
+  notifications:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    restart: always
+    depends_on:
+      - rabbitmq
+    env_file:
+      - 'dev.env'
+    environment:
+      PYTHONUNBUFFERED: 1
+
+  ##################################
+  # Pytest on Booking Room
+  ##################################
+  booking-room-pytest:
+    build:
+      context: ../
+      dockerfile: ci/Dockerfile.test
+    depends_on:
+      - mysql
+      - rabbitmq
+      - rooms
+      - customer
+      - bookings
+      - stripe
+      - room-booking
+      - admin-web
+      - notifications
+    environment:
+      db_conn: mysql+mysqlconnector://root:root@mysql:3306

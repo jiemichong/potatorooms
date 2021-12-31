@@ -1,0 +1,11 @@
+FROM python:3.9-slim
+WORKDIR /usr/src/app
+COPY requirements.txt ./
+COPY ci/requirements.test.txt ./
+COPY ci/wait-for-it.sh ./
+COPY src/* ./src/
+COPY tests/*.py ./tests/
+RUN chmod +x wait-for-it.sh
+RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.test.txt
+CMD ./wait-for-it.sh mysql:3306 -- python -m pytest
