@@ -1,0 +1,3 @@
+[submodule "services-booking-room"]
+	path = services-booking-room
+	url = https://github.com/jiemichong/services-booking-room

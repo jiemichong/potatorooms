@@ -1,0 +1,10 @@
+.env
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+
+# Python files
+__pycache__
+env
+venv
+dev.env
