@@ -13,3 +13,6 @@
 [submodule "services/notifications"]
 	path = services/notifications
 	url = https://github.com/jiemichong/notifications
+[submodule "services/customers"]
+	path = services/customers
+	url = https://github.com/jiemichong/customers
