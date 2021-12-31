@@ -7,3 +7,15 @@
 [submodule "services/bookings"]
 	path = services/bookings
 	url = https://github.com/jiemichong/bookings
+[submodule "services/customers"]
+	path = services/customers
+	url = https://github.com/jiemichong/customers
+[submodule "services/meeting-rooms"]
+	path = services/meeting-rooms
+	url = https://github.com/jiemichong/meeting-rooms
+[submodule "services/notifications"]
+	path = services/notifications
+	url = https://github.com/jiemichong/notifications
+[submodule "services/stripe"]
+	path = services/stripe
+	url = https://github.com/jiemichong/stripe
