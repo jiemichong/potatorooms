@@ -1,7 +1,0 @@
-Flask==2.0.1
-Flask-Cors==3.0.10
-Flask-SQLAlchemy==2.5.1
-mysql-connector-python==8.0.26
-pytest==6.2.5
-pytest-dependency==0.5.
-SQLAlchemy<1.4

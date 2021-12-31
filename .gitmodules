@@ -1,3 +1,9 @@
 [submodule "services-booking-room"]
 	path = services-booking-room
 	url = https://github.com/jiemichong/services-booking-room
+[submodule "services/booking-room"]
+	path = services/booking-room
+	url = https://github.com/jiemichong/booking-room
+[submodule "services/bookings"]
+	path = services/bookings
+	url = https://github.com/jiemichong/bookings
